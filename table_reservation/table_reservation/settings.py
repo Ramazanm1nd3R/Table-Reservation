@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -29,10 +30,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    #add apps
     'users',
     'reservations',
     'tables',
     'notifications',
+
+    #auth
+    'rest_framework', 
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -95,6 +102,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "users.CustomUser"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),  # Время жизни access-токена
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Время жизни refresh-токена
+    "AUTH_HEADER_TYPES": ("Bearer",),  # Формат заголовка
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
