@@ -1,7 +1,8 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from .views import UserRegistrationView, ActivateAccountView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
-    path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),  # Получение JWT
-    path("refresh/", TokenRefreshView.as_view(), name="token_refresh"),  # Обновление токена
+    path("register/", UserRegistrationView.as_view(), name="register"),
+    path("activate/<uidb64>/<token>/", ActivateAccountView.as_view(), name="activate"),
 ]
