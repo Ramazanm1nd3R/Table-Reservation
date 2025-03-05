@@ -1,4 +1,7 @@
 from django.core.mail import EmailMessage
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.urls import reverse
 import threading
 import logging
 
@@ -49,3 +52,35 @@ def send_activation_email(user, request):
     }
 
     Util.send_email(data)  # Отправляем письмо
+
+def send_reservation_email(user, reservation, request):
+    """Отправляет email с подтверждением бронирования"""
+    # Кодируем ID брони и токен
+    uid = urlsafe_base64_encode(force_bytes(reservation.pk))
+    confirm_link = request.build_absolute_uri(reverse("confirm-reservation-email", args=[uid, reservation.confirmation_token]))
+
+    subject = "Подтверждение бронирования столика"
+    message = f"""
+    Привет, {user.email}!
+
+    Вы зарезервировали столик:
+
+    📍 Столик: {reservation.table.number}
+    🕒 Дата и время: {reservation.reservation_time.strftime('%d-%m-%Y %H:%M')}
+    ⏳ Длительность: {reservation.duration} минут
+
+    ✅ Подтвердите бронирование по ссылке ниже:
+    {confirm_link}
+
+    Если вы не подтвердите бронирование за 15 минут до начала, оно будет автоматически отменено.
+
+    Спасибо, что выбрали наш ресторан!
+    """
+
+    data = {
+        "email_subject": subject,
+        "email_body": message,
+        "to_email": [user.email],
+    }
+
+    Util.send_email(data)

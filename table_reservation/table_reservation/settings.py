@@ -109,9 +109,13 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',  # Поддержка сессий в браузере
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT для API
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # Доступ только авторизованным
+    ),
 }
 
 SIMPLE_JWT = {
